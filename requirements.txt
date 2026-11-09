@@ -1,0 +1,23 @@
+# PacketGuard dependencies
+#
+# The core system, the detection engine, the simulation harness, the test suite,
+# and the dashboard all run on the Python standard library alone — so you can
+# clone and run with zero installs. The packages below unlock the OPTIONAL
+# production features noted against each one.
+
+# --- Optional: live packet capture (needs root + a real interface) -----------
+# Without scapy, PacketGuard runs in simulation mode (synthetic traffic).
+scapy>=2.5.0
+
+# --- Optional: Ethereum testnet anchoring instead of the local chain ---------
+# Pair with Ganache + the Solidity contract in src/blockchain/contracts/.
+web3>=6.0.0
+
+# --- Optional: if you prefer Flask over the bundled stdlib dashboard server --
+# The project ships its own dependency-free server (src/dashboard/app.py); this
+# is only needed if you swap in the Flask variant.
+# flask>=3.0.0
+
+# --- Development ---------------------------------------------------------------
+# The test suite uses the stdlib `unittest`; pytest is optional but convenient.
+# pytest>=8.0.0

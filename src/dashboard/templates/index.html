@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>PacketMonitor</title>
+  <meta name="description" content="Real-time blockchain-anchored packet integrity & fraud monitor">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <!-- Top chrome -->
+  <header class="topbar">
+    <div class="topbar__brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="30" height="30">
+          <defs>
+            <linearGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="var(--accent-2)"/>
+              <stop offset="1" stop-color="var(--accent)"/>
+            </linearGradient>
+          </defs>
+          <path d="M12 2.2l7.3 2.7v5.5c0 4.8-3.1 8.8-7.3 10-4.2-1.2-7.3-5.2-7.3-10V4.9L12 2.2z"
+                fill="url(#shieldGrad)"/>
+          <path d="M8.3 12.2l2.6 2.6 4.8-5.3" fill="none" stroke="#fff"
+                stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <div>
+        <h1>PacketMonitor</h1>
+        <p class="topbar__tagline">Every packet has a blockchain witness</p>
+      </div>
+    </div>
+    <div class="topbar__status">
+      <span class="pill" id="quorumPill" title="Witness quorum (2-of-3)">
+        <span class="pill__dot"></span><span id="quorumPillText">Quorum —</span>
+      </span>
+      <span class="pill" id="chainPill" title="Blockchain integrity">
+        <span class="pill__dot"></span><span id="chainPillText">Chain —</span>
+      </span>
+      <span class="pill" id="healthPill" title="System health">
+        <span class="pill__dot"></span><span id="healthPillText">—</span>
+      </span>
+      <button class="btn btn--ghost" id="demoToggle" aria-pressed="true">Demo&nbsp;on</button>
+      <button class="btn btn--icon" id="themeToggle" title="Toggle appearance" aria-label="Toggle appearance">
+        <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+          <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- Stat tiles -->
+    <section class="tiles" aria-label="Key metrics">
+      <article class="tile">
+        <p class="tile__label">Packets processed</p>
+        <p class="tile__value" id="statProcessed">0</p>
+        <p class="tile__sub" id="statThroughput">0 pkt/s</p>
+      </article>
+      <article class="tile">
+        <p class="tile__label">Integrity verified</p>
+        <p class="tile__value tile__value--ok" id="statVerified">0</p>
+        <p class="tile__sub" id="statVerifiedPct">0% of anchored</p>
+      </article>
+      <article class="tile">
+        <p class="tile__label">Threats detected</p>
+        <p class="tile__value tile__value--crit" id="statFlagged">0</p>
+        <p class="tile__sub" id="statSuppressed">0 suppressed</p>
+      </article>
+      <article class="tile">
+        <p class="tile__label">Blockchain blocks</p>
+        <p class="tile__value" id="statBlocks">0</p>
+        <p class="tile__sub" id="statDifficulty">difficulty —</p>
+      </article>
+      <article class="tile tile--spark">
+        <p class="tile__label">Throughput</p>
+        <svg id="spark" class="spark" viewBox="0 0 220 56" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <p class="tile__sub" id="statUptime">uptime 0s</p>
+      </article>
+    </section>
+
+    <!-- Attack controls -->
+    <section class="panel panel--controls">
+      <div class="panel__head">
+        <h2>Simulate attack</h2>
+        <span class="panel__hint">synthetic · in-process · attacks nothing real</span>
+      </div>
+      <div class="controls" id="injectControls">
+        <button class="chip" data-scenario="tampering">Tampering<small>R002</small></button>
+        <button class="chip" data-scenario="packet_drop">Packet drop<small>R001</small></button>
+        <button class="chip" data-scenario="replay">Replay<small>R003</small></button>
+        <button class="chip" data-scenario="syn_flood">SYN flood<small>R004</small></button>
+        <button class="chip" data-scenario="spam">Spam<small>R005</small></button>
+        <button class="chip" data-scenario="exfil">Exfiltration<small>R006</small></button>
+        <button class="chip" data-scenario="dns_tunnel">DNS tunnel<small>R006</small></button>
+        <button class="chip" data-scenario="route_hijack">Route hijack<small>R007</small></button>
+        <button class="chip" data-scenario="arp_spoof">ARP spoof<small>R008</small></button>
+      </div>
+    </section>
+
+    <div class="grid">
+      <!-- Live traffic feed -->
+      <section class="panel panel--feed">
+        <div class="panel__head">
+          <h2>Live traffic</h2>
+          <div class="legend">
+            <span class="legend__item"><i class="dot dot--ok"></i>verified</span>
+            <span class="legend__item"><i class="dot dot--crit"></i>tampered</span>
+            <span class="legend__item"><i class="dot dot--warn"></i>suspicious</span>
+            <span class="legend__item"><i class="dot dot--muted"></i>unanchored</span>
+          </div>
+        </div>
+        <div class="feed" id="feed" role="log" aria-live="polite" aria-label="Live packet feed"></div>
+      </section>
+
+      <!-- Alerts -->
+      <section class="panel panel--alerts">
+        <div class="panel__head">
+          <h2>Alerts</h2>
+          <span class="count-badge" id="alertCount">0</span>
+        </div>
+        <div class="alerts" id="alerts" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <div class="grid grid--thirds">
+      <!-- Attack distribution -->
+      <section class="panel">
+        <div class="panel__head"><h2>Attack distribution</h2></div>
+        <div class="bars" id="distribution"></div>
+      </section>
+
+      <!-- Blockchain ledger -->
+      <section class="panel">
+        <div class="panel__head">
+          <h2>Blockchain ledger</h2>
+          <span class="panel__hint" id="chainStatus">—</span>
+        </div>
+        <div class="ledger" id="ledger"></div>
+      </section>
+
+      <!-- Threat class: the core differentiator (ledger-enabled vs hygiene) -->
+      <section class="panel">
+        <div class="panel__head">
+          <h2>Threat class</h2>
+          <span class="panel__hint">ledger-caught vs network hygiene</span>
+        </div>
+        <div class="bars" id="threatClass"></div>
+      </section>
+    </div>
+
+    <div class="grid">
+      <!-- Witness quorum -->
+      <section class="panel">
+        <div class="panel__head">
+          <h2>Witness quorum</h2>
+          <span class="scheme-badge" id="quorumScheme">2-of-3</span>
+        </div>
+        <div class="quorum" id="quorum"></div>
+        <div class="panel__foot">
+          <span class="panel__hint" id="quorumDetail">—</span>
+          <button class="btn btn--danger" id="tamperBtn"
+                  title="Forge one witness's copy of a packet and watch the quorum outvote it">
+            Compromise a witness
+          </button>
+        </div>
+      </section>
+
+      <!-- Incident proof export -->
+      <section class="panel">
+        <div class="panel__head">
+          <h2>Incident proof</h2>
+          <span class="panel__hint">cryptographic audit export</span>
+        </div>
+        <div class="proof">
+          <div class="proof__controls">
+            <label for="proofSeq">Packet seq</label>
+            <input type="number" id="proofSeq" inputmode="numeric" placeholder="e.g. 42" min="0">
+            <button class="btn btn--primary" id="proofBtn">Export proof</button>
+            <a class="btn btn--ghost" id="proofDownload" href="#" hidden>Download JSON</a>
+          </div>
+          <div class="proof__out" id="proofOut">
+            <p class="empty">Enter a packet sequence number (or use “proof” on an alert) to generate a tamper-proof Merkle + quorum attestation.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="foot">
+      <span>PacketMonitor · Blockchain &amp; Cyber Security Project</span>
+      <span class="foot__note">All traffic shown is synthetic lab data. For educational use only.</span>
+    </footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
