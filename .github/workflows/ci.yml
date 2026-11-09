@@ -28,3 +28,4 @@ jobs:
 
     - name: Run Attack Simulation Suite
       run: python -m simulations.run_demo
+

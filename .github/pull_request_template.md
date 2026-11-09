@@ -12,3 +12,4 @@ Please check all that apply:
 - [ ] Core runs on Python standard library with 0 external dependencies
 - [ ] Unit tests pass: `python -m unittest discover -s tests -v`
 - [ ] Attack simulations pass: `python -m simulations.run_demo`
+

@@ -33,7 +33,7 @@ class ScenarioResult:
         return self.expected_rule in self.fired_rules
 
     def __str__(self) -> str:
-        mark = "✅ PASS" if self.passed else "❌ MISS"
+        mark = "[PASS]" if self.passed else "[MISS]"
         fired = ", ".join(sorted(set(self.fired_rules))) or "none"
         return (f"{mark}  {self.name:<24} expected {self.expected_rule} | "
                 f"fired: {fired}")

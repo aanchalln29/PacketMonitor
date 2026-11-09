@@ -4,10 +4,10 @@
 
 PacketMonitor is an educational and research prototype demonstrating data-in-transit integrity anchoring and network fraud detection.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
-| < 1.0   | :x:                |
+| Version | Supported |
+| ------- | --------- |
+| 1.0.x   | Yes       |
+| < 1.0   | No        |
 
 ## Scope & Responsible Disclosure
 
@@ -25,3 +25,4 @@ If you discover a potential vulnerability in PacketMonitor's cryptographic ancho
 ## Ethical Testing & Research Notice
 
 All attack simulations included in `simulations/` run in-process or within an isolated Docker lab network (`internal: true`). They should only ever be evaluated in authorized, sandboxed test environments.
+

@@ -24,10 +24,10 @@ def main() -> int:
     baseline_engine = PacketGuardEngine(difficulty=1)
     baseline = scenario_normal(baseline_engine)
     quiet = not baseline.fired_rules
-    print(f"{'✅ PASS' if quiet else '❌ FAIL'}  {'Normal traffic':<24} "
+    print(f"{'[PASS]' if quiet else '[FAIL]'}  {'Normal traffic':<24} "
           f"expected silence | fired: {baseline.fired_rules or 'none'}")
     ok = baseline_engine.blockchain.is_valid()[0]
-    print(f"{'✅ PASS' if ok else '❌ FAIL'}  {'Blockchain integrity':<24} "
+    print(f"{'[PASS]' if ok else '[FAIL]'}  {'Blockchain integrity':<24} "
           f"chain valid after {len(baseline_engine.blockchain)} blocks")
     print("-" * 68)
 

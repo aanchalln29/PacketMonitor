@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛡️ PacketMonitor
+# PacketMonitor
 
 ### **Blockchain-Anchored Data-Packet Integrity & Real-Time Network Fraud Detection**
 *Every packet has an immutable cryptographic witness.*
@@ -24,7 +24,7 @@
 
 </div>
 
-## 📌 Executive Summary
+## Executive Summary
 
 Modern cybersecurity tools (e.g., Nessus, OpenVAS, Nmap) focus primarily on probing hosts **at rest** for known CVEs. However, critical infrastructure, financial protocols, and industrial automation standards (such as **Modbus** and **SCADA**) transmit unencrypted payloads across untrusted or third-party network links where host-level patching is impossible.
 
@@ -36,19 +36,19 @@ Before transmission, every packet is cryptographically hashed (SHA-256) and anch
 
 ---
 
-## ⚡ Core Innovations
+## Core Innovations
 
-- ⛓️ **Cryptographic Wire Anchoring:** Computes SHA-256 packet fingerprints at egress and anchors them into an append-only chain before packets cross hostile or untrusted networks.
-- 🏛️ **2-of-3 Witness Quorum:** Replicates the ledger across three independent witness nodes with majority voting. Even if an attacker completely compromises one node, they cannot rewrite history—the remaining two witnesses outvote and isolate the rogue node.
-- 🌳 **Merkle Batching (8 packets/block):** Combines individual packet hashes into binary Merkle trees for accelerated verification, enabling logarithmic cryptographic inclusion proofs ($O(\log N)$).
-- 🎯 **Dual-Engine Detection (8 Threat Vectors):** Combines ledger-anchored invariant checks (tampering, drop, replay, route collapse) with statistical network-hygiene detectors (DoS, spam, DNS tunneling, ARP spoofing).
-- 📍 **Automated Hop Tracing & Localization:** Correlates TTL collapses and network telemetry to pinpoint the exact suspect hop where tampering or packet drops occurred.
-- 🛡️ **Defensive Auto-Hardening:** Immediately outputs actionable, dry-run remediation commands (e.g., dynamic `iptables` drop rules, static ARP table bindings).
-- 📜 **Cryptographic Audit Proofs:** Generates downloadable JSON audit packages containing the raw packet hash, Merkle inclusion path, and multi-witness quorum digital signatures.
+- **Cryptographic Wire Anchoring:** Computes SHA-256 packet fingerprints at egress and anchors them into an append-only chain before packets cross hostile or untrusted networks.
+- **2-of-3 Witness Quorum:** Replicates the ledger across three independent witness nodes with majority voting. Even if an attacker completely compromises one node, they cannot rewrite history—the remaining two witnesses outvote and isolate the rogue node.
+- **Merkle Batching (8 packets/block):** Combines individual packet hashes into binary Merkle trees for accelerated verification, enabling logarithmic cryptographic inclusion proofs ($O(\log N)$).
+- **Dual-Engine Detection (8 Threat Vectors):** Combines ledger-anchored invariant checks (tampering, drop, replay, route collapse) with statistical network-hygiene detectors (DoS, spam, DNS tunneling, ARP spoofing).
+- **Automated Hop Tracing & Localization:** Correlates TTL collapses and network telemetry to pinpoint the exact suspect hop where tampering or packet drops occurred.
+- **Defensive Auto-Hardening:** Immediately outputs actionable, dry-run remediation commands (e.g., dynamic `iptables` drop rules, static ARP table bindings).
+- **Cryptographic Audit Proofs:** Generates downloadable JSON audit packages containing the raw packet hash, Merkle inclusion path, and multi-witness quorum digital signatures.
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```text
        ┌──────────────┐
@@ -80,7 +80,7 @@ Before transmission, every packet is cryptographically hashed (SHA-256) and anch
 
 ---
 
-## 🛡️ Attack Detection Matrix
+## Attack Detection Matrix
 
 PacketMonitor's detection suite is governed by configurable rules defined in `src/detection/rules.json`:
 
@@ -97,16 +97,16 @@ PacketMonitor's detection suite is governed by configurable rules defined in `sr
 
 ---
 
-## 🖥️ Real-Time Dashboard
+## Real-Time Dashboard
 
 PacketMonitor features an Apple-inspired monitoring interface with responsive Light and Dark themes, served directly via Python's built-in HTTP server (`src/dashboard/app.py`).
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ 🛡️ PacketMonitor                   Quorum: 2-of-3 Healthy ●  Throughput: 142 pps │
+│ PacketMonitor                     Quorum: 2-of-3 Healthy [OK] Throughput: 142 pps│
 ├──────────────────────────┬──────────────────────────┬───────────────────────────┤
 │ STATS TILES              │ LIVE TRAFFIC STREAM      │ INCIDENT ALERT FEED       │
-│ • Packets Processed: 580 │ • [10.0.0.1:443] VERIFIED│ • 🚨 CRITICAL: R002 MitM  │
+│ • Packets Processed: 580 │ • [10.0.0.1:443] VERIFIED│ • CRITICAL: R002 MitM     │
 │ • Integrity Rate:  98.4% │ • [10.0.0.5:80]  TAMPERED│   Hop 2 (192.168.1.1)     │
 │ • Threats Blocked:    11 │ • [10.0.0.2:53]  EXFIL   │   Remediation: iptables   │
 ├──────────────────────────┴──────────────────────────┴───────────────────────────┤
@@ -123,7 +123,7 @@ PacketMonitor features an Apple-inspired monitoring interface with responsive Li
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - **Python 3.9+** (No external package managers, pip installs, or virtual environments required).
@@ -144,18 +144,18 @@ python -m simulations.run_demo
 ====================================================================
  PacketMonitor — Attack Simulation Suite (synthetic, in-process)
 ====================================================================
-✅ PASS  Normal traffic           expected silence | fired: none
-✅ PASS  Blockchain integrity     chain valid after 21 blocks
+[PASS]  Normal traffic           expected silence | fired: none
+[PASS]  Blockchain integrity     chain valid after 21 blocks
 --------------------------------------------------------------------
-✅ PASS  Packet tampering (MitM)  expected R002 | fired: R002
-✅ PASS  Packet drop / theft      expected R001 | fired: R001
-✅ PASS  Replay attack            expected R003 | fired: R003
-✅ PASS  SYN flood (DoS)          expected R004 | fired: R004
-✅ PASS  Spam flood               expected R005 | fired: R005
-✅ PASS  Data exfiltration        expected R006 | fired: R006
-✅ PASS  DNS tunneling            expected R006 | fired: R006
-✅ PASS  Route hijack (TTL)       expected R007 | fired: R007
-✅ PASS  ARP spoof (MitM)         expected R008 | fired: R008
+[PASS]  Packet tampering (MitM)  expected R002 | fired: R002
+[PASS]  Packet drop / theft      expected R001 | fired: R001
+[PASS]  Replay attack            expected R003 | fired: R003
+[PASS]  SYN flood (DoS)          expected R004 | fired: R004
+[PASS]  Spam flood               expected R005 | fired: R005
+[PASS]  Data exfiltration        expected R006 | fired: R006
+[PASS]  DNS tunneling            expected R006 | fired: R006
+[PASS]  Route hijack (TTL)       expected R007 | fired: R007
+[PASS]  ARP spoof (MitM)         expected R008 | fired: R008
 --------------------------------------------------------------------
  11/11 checks passed
 ====================================================================
@@ -169,7 +169,7 @@ Open **[http://127.0.0.1:8000](http://127.0.0.1:8000)** in your browser to inspe
 
 ---
 
-## 🧪 Testing & Verification
+## Testing & Verification
 
 PacketMonitor includes a comprehensive, deterministic unit test suite covering blockchain consistency, Merkle proofs, witness quorum voting, and detection engine rules:
 
@@ -190,17 +190,18 @@ OK
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 PacketMonitor/
 ├── .github/
-│   └── workflows/
-│       └── ci.yml               # Automated multi-OS CI testing (Ubuntu, Windows, macOS)
+│   ├── workflows/
+│   │   └── ci.yml               # Automated multi-OS CI testing (Ubuntu, Windows, macOS)
+│   └── pull_request_template.md # PR guidelines
 ├── docs/
-│   ├── architecture.md          # Comprehensive architectural specification
+│   ├── architecture.md          # Architectural specification
 │   ├── attack_scenarios.md      # Detailed threat modeling & scenario definitions
-│   └── demo_script.md           # Step-by-step presentation & live demo guide
+│   └── demo_script.md           # Step-by-step presentation & demo guide
 ├── simulations/
 │   ├── run_demo.py              # CLI test harness proving all 11 simulation checks
 │   ├── scenarios.py             # Synthetic attack generators (MitM, Replay, DoS, etc.)
@@ -213,14 +214,16 @@ PacketMonitor/
 │   ├── response/                # Hop tracing, iptables rule synthesis, audit proof export
 │   └── engine.py                # Central orchestrator integrating all subsystems
 ├── tests/                       # 53 deterministic unit tests (Python stdlib)
+├── CONTRIBUTING.md              # Contribution and development guidelines
 ├── LICENSE                      # MIT License
 ├── README.md                    # Project documentation
+├── SECURITY.md                  # Security and disclosure policy
 └── requirements.txt             # Optional extras (scapy for raw PCAP capture, web3)
 ```
 
 ---
 
-## 💼 Portfolio & Resume Highlights
+## Portfolio & Resume Highlights
 
 When presenting **PacketMonitor** in professional or academic contexts:
 
@@ -231,8 +234,8 @@ When presenting **PacketMonitor** in professional or academic contexts:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
-Developed with precision for **Blockchain & Cyber Security** research.
+Developed for **Blockchain & Cyber Security** research.
